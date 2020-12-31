@@ -21,7 +21,8 @@ public class Game extends JFrame  {
     int UNFILLED = 0;
 
     Pix[][] pix = new Pix[yField+1][xField+1];
-    int[][] area = new int[yField+1][xField+1];
+    int[][] mainLayer = new int[yField+1][xField+1];
+    int[][] figuresLayer = new int[yField+1][xField+1];
 
     int generatedColor = 3;
     int generatedFigure = 3;
@@ -61,10 +62,10 @@ public class Game extends JFrame  {
     void coutArea(){
         for(int y = 0; y < yField; y++){
             for(int x = 0; x < xField; x++) {
-                if (area[y][x] != 0) {
-                    pix[y][x].setColor(area[y][x]);
+                if (figuresLayer[y][x] != 0) {
+                    pix[y][x].setColor(figuresLayer[y][x]);
                 }
-                System.out.print(area[y][x]);
+                System.out.print(figuresLayer[y][x]);
                 //if(x == 2) pix[y][x].setColor(3); //test the drawer
             }
             System.out.println();
@@ -74,7 +75,12 @@ public class Game extends JFrame  {
     void arrayInit(){
         for(int y = 0; y < yField; y++) {
             for (int x = 0; x < xField; x++) {
-                area[y][x] = 0;
+                mainLayer[y][x] = 0;
+            }
+        }
+        for(int y = 0; y < yField; y++) {
+            for (int x = 0; x < xField; x++) {
+                figuresLayer[y][x] = 0;
             }
         }
     }
@@ -82,19 +88,45 @@ public class Game extends JFrame  {
     void drawFigure(int generatedColor, int typeOfFigure, int xSpawn, int ySpawn) {
         switch (typeOfFigure) {
             case 1:  //stick
-                for (int y = ySpawn; y < ySpawn + 4; y++) {
-                    area[y][xSpawn] = generatedColor;
-                }
+                figuresLayer[ySpawn][xSpawn] = generatedColor;
+                figuresLayer[ySpawn+1][xSpawn] = generatedColor;
+                figuresLayer[ySpawn+2][xSpawn] = generatedColor;
+                figuresLayer[ySpawn+3][xSpawn] = generatedColor;
                 break;
-            case 2:
-                for(int y = ySpawn; y < ySpawn + 4; y++){
-                    if(y == ySpawn+3){
-                        area[y-1][xSpawn+1] = generatedColor;
-                        break;
-                    }
-                    area[y][xSpawn] = generatedColor;
-                }
+
+            case 2: //hook
+                figuresLayer[ySpawn][xSpawn] = generatedColor;
+                figuresLayer[ySpawn+1][xSpawn] = generatedColor;
+                figuresLayer[ySpawn+2][xSpawn] = generatedColor;
+                figuresLayer[ySpawn+2][xSpawn+1] = generatedColor;
                 break;
+
+            case 3:  //bench
+                figuresLayer[ySpawn][xSpawn] = generatedColor;
+                figuresLayer[ySpawn+1][xSpawn] = generatedColor;
+                figuresLayer[ySpawn+1][xSpawn+1] = generatedColor;
+                figuresLayer[ySpawn+2][xSpawn+1] = generatedColor;
+                break;
+
+            case 4:  //box
+                figuresLayer[ySpawn][xSpawn] = generatedColor;
+                figuresLayer[ySpawn+1][xSpawn] = generatedColor;
+                figuresLayer[ySpawn+1][xSpawn+1] = generatedColor;
+                figuresLayer[ySpawn][xSpawn+1] = generatedColor;
+                break;
+
+            case 5: //bridge
+                figuresLayer[ySpawn][xSpawn] = generatedColor;
+                figuresLayer[ySpawn+1][xSpawn] = generatedColor;
+                figuresLayer[ySpawn][xSpawn+1] = generatedColor;
+                figuresLayer[ySpawn][xSpawn+2] = generatedColor;
+                figuresLayer[ySpawn+1][xSpawn+2] = generatedColor;
+                break;
+
+            case 6: //bird
+                figuresLayer[ySpawn][xSpawn] = generatedColor;
+                figuresLayer[ySpawn+1][xSpawn] = generatedColor;
+                figuresLayer[ySpawn][xSpawn+1] = generatedColor;
         }
     }
 
@@ -109,7 +141,7 @@ public class Game extends JFrame  {
         System.out.println(generatedFigure);
         System.out.println(xSpawn);
         System.out.println(ySpawn);
-        drawFigure(generatedColor, 2, xSpawn, ySpawn);
+        drawFigure(generatedColor, 6, xSpawn, ySpawn);
         pixInit();
         coutArea();
         repaint();

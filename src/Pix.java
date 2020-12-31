@@ -28,7 +28,7 @@ public class Pix {
                 this.color = Color.green;
                 break;
             case 4:
-                this.color = Color.black;
+                this.color = Color.magenta;
                 break;
             case 5:
                 this.color = Color.blue;
@@ -43,7 +43,7 @@ public class Pix {
                 this.color = Color.orange;
                 break;
             case 9:
-                this.color = Color.magenta;
+                this.color = Color.WHITE;
                 break;
         }
     }
