@@ -53,7 +53,7 @@ public class Game extends JFrame {
             }
         }
     }
-
+    
     @Override
     public void paint(Graphics g) {
         super.paint(g);
@@ -62,7 +62,7 @@ public class Game extends JFrame {
                 pix[y][x].draw(g);
             }
         }
-        cadre.draw(g);
+            cadre.draw(g);
     }
 
     void coutArea() {
@@ -230,33 +230,13 @@ public class Game extends JFrame {
         }
     }
 
-    public void setxDefine(int xDefine) {
-        this.xDefine = xDefine;
-    }
-
-    public void setyDefine(int yDefine) {
-        this.yDefine = yDefine;
-    }
-
-    public void setPixDem(int pixDem) {
-        this.pixDem = pixDem;
-    }
-
-    public void setyField(int yField) {
-        this.yField = yField;
-    }
-
-    public void setxField(int xField) {
-        this.xField = xField;
-    }
-
-    public void setUNFILLED(int UNFILLED) {
-        this.UNFILLED = UNFILLED;
-    }
-
-    public void setDelay(int delay) {
-        this.delay = delay;
-    }
+    public void setxDefine(int xDefine) { this.xDefine = xDefine; }
+    public void setyDefine(int yDefine) { this.yDefine = yDefine; }
+    public void setPixDem(int pixDem) { this.pixDem = pixDem; }
+    public void setyField(int yField) { this.yField = yField; }
+    public void setxField(int xField) { this.xField = xField; }
+    public void setUNFILLED(int UNFILLED) { this.UNFILLED = UNFILLED; }
+    public void setDelay(int delay) { this.delay = delay; }
 
     public Game() {
         KeyListener listener = new MyKeyListener();
