@@ -1,4 +1,20 @@
-public class MainClass {
+import javax.swing.*;
+import java.awt.*;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.util.Random;
+import javax.swing.*;
+import java.awt.*;
+import java.util.Random;
+import java.awt.event.*;
+import java.awt.Color;
+import javax.swing.JFrame;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+public class MainClass extends JPanel {
     Game game = new Game();
 
     final int xDefine = 700;  //width
@@ -6,7 +22,7 @@ public class MainClass {
     final int pixDem = 20;
     final int yField = 15;
     final int xField = 9;
-    final int delay = 1000; //ms
+    final int delay = 150; //ms
     final int UNFILLED = 0;
 
     public void initGame() {
