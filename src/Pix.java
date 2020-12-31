@@ -1,7 +1,7 @@
 import java.awt.*;
 
 public class Pix {
-    private Color color = Color.red;
+    private Color color = Color.BLACK;
     private int xCenter = 20;
     private int yCenter = 40;
     private int pixDem = 10;
