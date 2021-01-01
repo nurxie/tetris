@@ -28,7 +28,7 @@ public class Game extends JFrame {
     Cadre cadre = new Cadre();
     int[][] mainLayer = new int[yField][xField];
     int[][] figuresLayer = new int[yField][xField];
-    int[][] duplicate = new int[yField][xField];
+    int[][] pastView = new int[yField][xField];
 
     int generatedColor = 3;
     int generatedFigure = 3;
@@ -70,7 +70,9 @@ public class Game extends JFrame {
         for (int y = 0; y < yField; y++) {
             for (int x = 0; x < xField; x++) {
                 //pix[y][x].setColor(3); //test the drawer
-                if (figuresLayer[y][x] != 0) {
+                if (mainLayer[y][x] != 0) { //!
+                    pix[y][x].setColor(mainLayer[y][x]);
+                } else {
                     pix[y][x].setColor(figuresLayer[y][x]);
                 }
                 System.out.print(figuresLayer[y][x]);
@@ -94,7 +96,7 @@ public class Game extends JFrame {
         }
         for (int y = 0; y < yField; y++) {
             for (int x = 0; x < xField; x++) {
-                duplicate[y][x] = 0;
+                pastView[y][x] = 0;
             }
         }
     }
@@ -173,7 +175,7 @@ public class Game extends JFrame {
                 figuresLayer[y][x - 1] = figuresLayer[y][x];
             }
         }
-        for (int i = yField; i > 0; i--) {
+        for (int i = yField; i >= 0; i--) {
             figuresLayer[i][xField - 1] = 0;
         }
         return true;
@@ -193,7 +195,7 @@ public class Game extends JFrame {
 
             }
         }
-        for (int i = yField; i > 0; i--) {
+        for (int i = yField; i >= 0; i--) {
             figuresLayer[i][0] = 0;
         }
         return true;
@@ -227,31 +229,75 @@ public class Game extends JFrame {
                 }
             }
         }
-        for(int y = 0; y < yField; y++){ //clear figureLayer
-            for(int x = 0; x < xField; x++){
+
+        if(xCut+4<=xField && yCut+4<=yField) { // possibility check
+            for (int y = 0; y < yField; y++) { //clear figureLayer
+                for (int x = 0; x < xField; x++) {
+                    figuresLayer[y][x] = 0;
+                }
+            }
+
+            for (int y = 0; y < 4; y++) {  //roll the figure
+                for (int x = 0; x < 4; x++) {
+                    dupFigure[x][y] = figure[y][x];
+                }
+            }
+
+            for (int y = 0; y < 4; y++) {
+                for (int x = 0; x < 4; x++) {
+                    System.out.print(dupFigure[y][x]);
+                }
+                System.out.println();
+            }
+
+            for (int y = 0; y < 4; y++) { //paste
+                for (int x = 0; x < 4; x++) {
+                    figuresLayer[yCut + y][xCut + x] = dupFigure[y][x];
+                }
+            }
+        }
+        return false;
+    }
+
+    boolean collisionChek(){
+        for (int y = yField; y >= 0; y--) {
+            for (int x = xField; x >= 0; x--) {
+                if(figuresLayer[y][x] != 0) {
+                    if (y + 2 <= yField) {
+                        System.out.println("WOW YEAH!");
+                        if (mainLayer[y + 1][x] != 0) {
+                            return true;
+                        }
+                    }else if(y+2 >= yField){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    void mergerLayers(){
+        for (int y = yField; y >= 0; y--) {
+            for (int x = xField; x >= 0; x--) {
+                if(mainLayer[y][x] == 0) {
+                    mainLayer[y][x] = figuresLayer[y][x];
+                }
+            }
+        }
+        for (int y = yField; y >= 0; y--) {
+            for (int x = xField; x >= 0; x--) {
                 figuresLayer[y][x] = 0;
             }
         }
+    }
 
-        for (int y = 0; y < 4; y++) {  //roll the figure
-            for (int x = 0; x < 4; x++) {
-                dupFigure[x][y] = figure[y][x];
+    boolean gameOverChek(){
+        for(int x = 0; x < xField; x++){
+            if(mainLayer[1][x] != 0){
+                return true;
             }
         }
-
-        for(int y = 0; y < 4; y++){
-            for(int x = 0; x < 4; x++){
-                System.out.print(dupFigure[y][x]);
-            }
-            System.out.println();
-        }
-
-        for(int y = 0; y < 4; y++){
-            for(int x = 0; x < 4; x++){
-                figuresLayer[yCut + y][xCut + x] = dupFigure[y][x];
-            }
-        }
-
         return false;
     }
 
@@ -272,15 +318,28 @@ public class Game extends JFrame {
         repaint();
         waiting();
         gravitation();
+        System.out.println(collisionChek());
         pixInit();
         coutArea();
         repaint();
         while (true) {
+            generatedColor = random.nextInt(9) + 1;
+            generatedFigure = random.nextInt(6) + 1;
             gravitation();
             pixInit();
             coutArea();
             repaint();
             waiting();
+            boolean i = collisionChek();
+            System.out.println(i);
+            if(i)mergerLayers();
+            if(i)drawFigure(generatedColor, generatedFigure, xSpawn, ySpawn);
+            i = gameOverChek();
+            System.out.println(i + " Game over cheked");
+            if(i){
+                System.out.println("GAME OVER!");
+                System.exit(1);
+            }
         }
     }
 

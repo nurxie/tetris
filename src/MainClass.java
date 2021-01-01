@@ -22,7 +22,7 @@ public class MainClass extends JPanel {
     final int pixDem = 20;
     final int yField = 15;//15
     final int xField = 9;
-    final int delay = 500; //ms
+    final int delay = 200; //ms
     final int UNFILLED = 0;
 
     public void initGame() {
