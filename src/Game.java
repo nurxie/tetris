@@ -28,6 +28,7 @@ public class Game extends JFrame {
     Cadre cadre = new Cadre();
     int[][] mainLayer = new int[yField][xField];
     int[][] figuresLayer = new int[yField][xField];
+    int[][] duplicate = new int[yField][xField];
 
     int generatedColor = 3;
     int generatedFigure = 3;
@@ -53,7 +54,7 @@ public class Game extends JFrame {
             }
         }
     }
-    
+
     @Override
     public void paint(Graphics g) {
         super.paint(g);
@@ -89,6 +90,11 @@ public class Game extends JFrame {
         for (int y = 0; y < yField; y++) {
             for (int x = 0; x < xField; x++) {
                 figuresLayer[y][x] = 0;
+            }
+        }
+        for (int y = 0; y < yField; y++) {
+            for (int x = 0; x < xField; x++) {
+                duplicate[y][x] = 0;
             }
         }
     }
@@ -193,6 +199,62 @@ public class Game extends JFrame {
         return true;
     }
 
+    boolean rollFigure(){
+        int c = 0;
+        int[][] figure = {    {0, 0, 0, 0},
+                              {0, 0, 0, 0},
+                              {0, 0, 0, 0},
+                              {0, 0, 0, 0} };
+
+        int[][] dupFigure = {     {0, 0, 0, 0},
+                                  {0, 0, 0, 0},
+                                  {0, 0, 0, 0},
+                                  {0, 0, 0, 0} };
+        int xCut = 0;
+        int yCut = 0;
+        for (int y = 0; y < yField; y++) {  //cut fragment with figure
+            for (int x = 0; x < xField; x++) {
+                if (figuresLayer[y][x] != 0 && c == 0) {
+                    c++;
+                    for (int y1 = 0; y1 < 4; y1++) {
+                        for (int x1 = 0; x1 < 4; x1++) {
+                            figure[y1][x1] = figuresLayer[y + y1][x + x1];
+                        }
+                    }
+                    xCut = x;
+                    yCut = y;
+                    break;
+                }
+            }
+        }
+        for(int y = 0; y < yField; y++){ //clear figureLayer
+            for(int x = 0; x < xField; x++){
+                figuresLayer[y][x] = 0;
+            }
+        }
+
+        for (int y = 0; y < 4; y++) {  //roll the figure
+            for (int x = 0; x < 4; x++) {
+                dupFigure[x][y] = figure[y][x];
+            }
+        }
+
+        for(int y = 0; y < 4; y++){
+            for(int x = 0; x < 4; x++){
+                System.out.print(dupFigure[y][x]);
+            }
+            System.out.println();
+        }
+
+        for(int y = 0; y < 4; y++){
+            for(int x = 0; x < 4; x++){
+                figuresLayer[yCut + y][xCut + x] = dupFigure[y][x];
+            }
+        }
+
+        return false;
+    }
+
     public void startGame() {
         generatedColor = random.nextInt(9) + 1;
         generatedFigure = random.nextInt(6) + 1;
@@ -257,6 +319,9 @@ public class Game extends JFrame {
             }
             if (KeyEvent.getKeyText(e.getKeyCode()) == "Right") {
                 moveRight();
+            }
+            if(KeyEvent.getKeyText(e.getKeyCode()) == "Up") {
+                rollFigure();
             }
         }
 
