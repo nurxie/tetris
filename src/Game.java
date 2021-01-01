@@ -26,6 +26,7 @@ public class Game extends JFrame {
 
     Pix[][] pix = new Pix[yField][xField];
     Cadre cadre = new Cadre();
+    GameOver gameOver = new GameOver();
     int[][] mainLayer = new int[yField][xField];
     int[][] figuresLayer = new int[yField][xField];
     int[][] pastView = new int[yField][xField];
@@ -36,6 +37,7 @@ public class Game extends JFrame {
     int ySpawn = 0;
 
     boolean itsBeDescent = false;
+    int score = 0;
 
     public void createFrame() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -66,6 +68,7 @@ public class Game extends JFrame {
             }
         }
             cadre.draw(g);
+        gameOver.draw(g);
     }
 
     void coutArea() {
@@ -319,6 +322,25 @@ public class Game extends JFrame {
         return false;
     }
 
+    boolean deletingARow() {
+        int counter = 0;
+        for (int y = 0; y < yField; y++) {
+            for (int x = 0; x < xField; x++) {
+                if (mainLayer[y][x] == 0) counter = 0;
+                counter++;
+                if (counter >= xField-1) {
+                    System.out.println("YESYESYESYESYESYESYESYESYESYESYESYESYESYESYESYESYESYESYES");
+                    score++;
+                    gameOver.setScore(score);
+                    for (int x1 = 0; x1 < xField; x1++) {
+                        mainLayer[y][x1] = 0;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     public void startGame() {
         generatedColor = random.nextInt(9) + 1;
         generatedFigure = random.nextInt(6) + 1;
@@ -336,6 +358,7 @@ public class Game extends JFrame {
         coutArea();
         repaint();
         while (true) {
+            deletingARow();
             generatedColor = random.nextInt(9) + 1;
             generatedFigure = random.nextInt(6) + 1;
             gravitation();
