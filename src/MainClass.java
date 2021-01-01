@@ -19,9 +19,9 @@ public class MainClass extends JPanel {
 
     final int xDefine = 700;  //width
     final int yDefine = 700;  //height
-    final int pixDem = 20;
-    final int yField = 15;//15
-    final int xField = 9;
+    final int pixDem = 12; //20
+    final int yField = 25; //15
+    final int xField = 15; //9
     final int delay = 200; //ms
     final int UNFILLED = 0;
 

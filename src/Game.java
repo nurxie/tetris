@@ -19,8 +19,8 @@ public class Game extends JFrame {
     int xDefine;  //width
     int yDefine;  //height
     int pixDem = 16;
-    int yField = 16;
-    int xField = 16;
+    int yField = 30;
+    int xField = 30;
     int delay;
     int UNFILLED = 0;
 
@@ -34,6 +34,8 @@ public class Game extends JFrame {
     int generatedFigure = 3;
     int xSpawn = 4;
     int ySpawn = 0;
+
+    boolean itsBeDescent = false;
 
     public void createFrame() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -75,7 +77,7 @@ public class Game extends JFrame {
                 } else {
                     pix[y][x].setColor(figuresLayer[y][x]);
                 }
-                System.out.print(figuresLayer[y][x]);
+                System.out.print(mainLayer[y][x]);
                 //if(x == 2) pix[y][x].setColor(3); //test the drawer
             }
             System.out.println();
@@ -147,6 +149,7 @@ public class Game extends JFrame {
     }
 
     boolean gravitation() {
+        boolean i = false;
         for (int y = yField; y >= 0; y--) {
             for (int x = 0; x < xField; x++) {
                 if (figuresLayer[y][x] != UNFILLED) {
@@ -154,48 +157,54 @@ public class Game extends JFrame {
                         if (figuresLayer[y][x] != 0 && y == yField - 1) return false;
                         figuresLayer[y + 1][x] = figuresLayer[y][x];
                         figuresLayer[y][x] = UNFILLED;
+                        i = true;
                     }
                 }
             }
         }
-        return true;
+        return i;
     }
 
     boolean moveLeft() {
         int value = 0;
         for (int y1 = 0; y1 < yField; y1++) {
             value = value + figuresLayer[y1][0];
-            System.out.println(value);
             if (value != 0) {
                 return false;
             }
         }
         for (int x = 1; x < xField; x++) {
             for (int y = 0; y < yField; y++) {
+                if(figuresLayer[y][x] != 0 && mainLayer[y][x-1] != 0) return false;
+                if(figuresLayer[y][x] != 0 && mainLayer[y+1][x-1] != 0 ) return false;
                 figuresLayer[y][x - 1] = figuresLayer[y][x];
+                figuresLayer[y][x] = 0;
             }
         }
         for (int i = yField; i >= 0; i--) {
-            figuresLayer[i][xField - 1] = 0;
+           figuresLayer[i][xField - 1] = 0;
         }
+        gravitation();
         return true;
     }
 
     boolean moveRight() {
         int value = 0;
-        for (int y1 = 0; y1 < yField; y1++) {
+        for (int y1 = 0; y1 < yField; y1++) { // walls checks
             value = value + figuresLayer[y1][xField - 1];
             if (value != 0) {
                 return false;
             }
         }
-        for (int x = xField; x >= 0; x--) {
+        for (int x = xField-1; x >= 0; x--) {  //move right
             for (int y = 0; y < yField; y++) {
-                figuresLayer[y][x + 1] = figuresLayer[y][x];
-
+                if(figuresLayer[y][x] != 0 && mainLayer[y][x-1] != 0) return false;
+                if(figuresLayer[y][x] != 0 && mainLayer[y+1][x+1] != 0 ) return false;
+                    figuresLayer[y][x + 1] = figuresLayer[y][x];
+                    figuresLayer[y][x] = 0;
             }
         }
-        for (int i = yField; i >= 0; i--) {
+        for (int i = yField; i >= 0; i--) { //delete near wall
             figuresLayer[i][0] = 0;
         }
         return true;
@@ -237,18 +246,15 @@ public class Game extends JFrame {
                 }
             }
 
-            for (int y = 0; y < 4; y++) {  //roll the figure
-                for (int x = 0; x < 4; x++) {
-                    dupFigure[x][y] = figure[y][x];
+            for (int y = 0; y < 4; ++y) {  //roll the figure
+                for (int x = 0; x < 4; ++x) {
+                        dupFigure[x][3-y] = figure[y][x];
                 }
             }
 
-            for (int y = 0; y < 4; y++) {
-                for (int x = 0; x < 4; x++) {
-                    System.out.print(dupFigure[y][x]);
-                }
-                System.out.println();
-            }
+            for (int y = 0; y < 4; y++)
+                for (int x = 0; x < 4; x++)
+                    System.out.println(dupFigure[y][x]);
 
             for (int y = 0; y < 4; y++) { //paste
                 for (int x = 0; x < 4; x++) {
@@ -257,6 +263,18 @@ public class Game extends JFrame {
             }
         }
         return false;
+    }
+
+    void sharpDescent(){
+        while(true) {
+            gravitation();
+            if (collisionChek()) {
+                mergerLayers();
+                break;
+            }
+            repaint();
+        }
+        itsBeDescent = true;
     }
 
     boolean collisionChek(){
@@ -308,17 +326,12 @@ public class Game extends JFrame {
         pixInit();
         coutArea();
         repaint();
-        System.out.println(generatedColor);
-        System.out.println(generatedFigure);
-        System.out.println(xSpawn);
-        System.out.println(ySpawn);
         drawFigure(generatedColor, 1, xSpawn, ySpawn);
         pixInit();
         coutArea();
         repaint();
         waiting();
         gravitation();
-        System.out.println(collisionChek());
         pixInit();
         coutArea();
         repaint();
@@ -332,13 +345,16 @@ public class Game extends JFrame {
             waiting();
             boolean i = collisionChek();
             System.out.println(i);
-            if(i)mergerLayers();
-            if(i)drawFigure(generatedColor, generatedFigure, xSpawn, ySpawn);
+            if(i || itsBeDescent)mergerLayers();
+            if(i || itsBeDescent){
+                itsBeDescent = false;
+                drawFigure(generatedColor, generatedFigure, xSpawn, ySpawn);
+            }
             i = gameOverChek();
             System.out.println(i + " Game over cheked");
-            if(i){
+            if(i && !itsBeDescent){
                 System.out.println("GAME OVER!");
-                System.exit(1);
+                break;
             }
         }
     }
@@ -382,6 +398,10 @@ public class Game extends JFrame {
             if(KeyEvent.getKeyText(e.getKeyCode()) == "Up") {
                 rollFigure();
             }
+            if(KeyEvent.getKeyText(e.getKeyCode()) == "Down") {
+                sharpDescent();
+            }
+
         }
 
         @Override
