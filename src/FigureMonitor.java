@@ -7,7 +7,14 @@ public class FigureMonitor {
 
     int typeOfFigure = 1;
 
+    boolean cadre = false;
+
     public void draw(Graphics g) {
+        if(cadre){
+            g.setColor(Color.CYAN);
+            g.drawRect(xCenter-70, yCenter-33, 140, 140);
+            //cadre = false;
+        }
     switch (typeOfFigure){
         case 1:
             g.setColor(color);//I
@@ -137,5 +144,9 @@ public class FigureMonitor {
 
     public void setTypeOfFigure(int typeOfFigure) {
         this.typeOfFigure = typeOfFigure;
+    }
+
+    public void setCadre(boolean cadre) {
+        this.cadre = cadre;
     }
 }

@@ -27,7 +27,7 @@ public class Game extends JFrame {
 
     Pix[][] pix = new Pix[yField][xField];
     Cadre cadre = new Cadre();
-    GameOver gameOver = new GameOver();
+    Score score = new Score();
     FigureMonitor figureMonitor = new FigureMonitor();
     int[][] mainLayer = new int[yField][xField];
     int[][] figuresLayer = new int[yField][xField];
@@ -39,7 +39,7 @@ public class Game extends JFrame {
     int ySpawn = 0;
 
     boolean itsBeDescent = false;
-    int score = 0;
+    int scoreCountner = 0;
 
     public void createFrame() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -70,7 +70,7 @@ public class Game extends JFrame {
             }
         }
             cadre.draw(g);
-        gameOver.draw(g);
+        score.draw(g);
         figureMonitor.draw(g);
     }
 
@@ -388,8 +388,8 @@ public class Game extends JFrame {
                 counter++;
                 if (counter > xField) {
                     System.out.println("YESYESYESYESYESYESYESYESYESYESYESYESYESYESYESYESYESYESYES");
-                    score++;
-                    gameOver.setScore(score);
+                    scoreCountner++;
+                    score.setScore(scoreCountner);
                     for (int x1 = 0; x1 < xField; x1++) {
                         mainLayer[y][x1] = 0;
                     }
@@ -405,8 +405,9 @@ public class Game extends JFrame {
 
     void figureMonitorInit(){
         figureMonitor.setPixDem(pixDem);
-        figureMonitor.setxCenter(500);
+        figureMonitor.setxCenter(550);
         figureMonitor.setyCenter(100);
+        figureMonitor.setCadre(true);
     }
 
     boolean genFig = true;

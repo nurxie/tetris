@@ -1,10 +1,12 @@
 import java.awt.*;
 
-public class GameOver {
+public class Score {
     private int score = 0;
     public void draw(Graphics g) {
+        int fontSize = 20;
+        g.setFont(new Font("Comic Sans MS", Font.PLAIN, fontSize));
         g.setColor(Color.WHITE);
-        g.drawString("Score: " + String.valueOf(score), 20, 50);
+        g.drawString("Score: " + String.valueOf(score), 520, 230);
     }
 
     public void setScore(int score) {
