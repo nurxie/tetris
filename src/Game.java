@@ -28,6 +28,7 @@ public class Game extends JFrame {
     Pix[][] pix = new Pix[yField][xField];
     Cadre cadre = new Cadre();
     GameOver gameOver = new GameOver();
+    FigureMonitor figureMonitor = new FigureMonitor();
     int[][] mainLayer = new int[yField][xField];
     int[][] figuresLayer = new int[yField][xField];
     int[][] pastView = new int[yField][xField];
@@ -70,6 +71,7 @@ public class Game extends JFrame {
         }
             cadre.draw(g);
         gameOver.draw(g);
+        figureMonitor.draw(g);
     }
 
     void coutArea() {
@@ -364,12 +366,19 @@ public class Game extends JFrame {
         return ret;
     }
 
+    void figureMonitorInit(){
+        figureMonitor.setPixDem(pixDem);
+        figureMonitor.setxCenter(500);
+        figureMonitor.setyCenter(100);
+    }
+
     public void startGame() {
         xSpawn = Math.round(xField/2);
         generatedColor = random.nextInt(9) + 1;
         generatedFigure = random.nextInt(6) + 1;
         arrayInit();
         pixInit();
+        figureMonitorInit();
         coutArea();
         repaint();
         drawFigure(generatedColor, 1, xSpawn, ySpawn);
@@ -387,6 +396,8 @@ public class Game extends JFrame {
             }
             generatedColor = random.nextInt(9) + 1;
             generatedFigure = random.nextInt(6) + 1;
+            figureMonitor.setTypeOfFigure(5);
+            figureMonitor.setColor(generatedColor);
             gravitation(figuresLayer, mainLayer);
             pixInit();
             coutArea();
@@ -406,7 +417,7 @@ public class Game extends JFrame {
             }
             if((i || itsBeDescent && !d)){
                 itsBeDescent = false;
-                drawFigure(generatedColor, /*generatedFigure*/1, xSpawn, ySpawn);
+                drawFigure(generatedColor, /*generatedFigure*/5, xSpawn, ySpawn);
             }
             if(sandMode) {
                 while (emptinessChek(mainLayer)) ;
