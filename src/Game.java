@@ -111,35 +111,49 @@ public class Game extends JFrame {
 
     void drawFigure(int generatedColor, int typeOfFigure, int xSpawn, int ySpawn) {
         switch (typeOfFigure) {
-            case 1:  //stick
+            case 1:  //HERO (I)
                 figuresLayer[ySpawn][xSpawn] = generatedColor;
                 figuresLayer[ySpawn + 1][xSpawn] = generatedColor;
                 figuresLayer[ySpawn + 2][xSpawn] = generatedColor;
                 figuresLayer[ySpawn + 3][xSpawn] = generatedColor;
                 break;
 
-            case 2: //hook
+            case 2: //L
                 figuresLayer[ySpawn][xSpawn] = generatedColor;
                 figuresLayer[ySpawn + 1][xSpawn] = generatedColor;
                 figuresLayer[ySpawn + 2][xSpawn] = generatedColor;
                 figuresLayer[ySpawn + 2][xSpawn + 1] = generatedColor;
                 break;
 
-            case 3:  //bench
+            case 3: //J
+                figuresLayer[ySpawn][xSpawn+1] = generatedColor;
+                figuresLayer[ySpawn + 1][xSpawn+1] = generatedColor;
+                figuresLayer[ySpawn + 2][xSpawn+1] = generatedColor;
+                figuresLayer[ySpawn + 2][xSpawn] = generatedColor;
+                break;
+
+            case 4:  //S
                 figuresLayer[ySpawn][xSpawn] = generatedColor;
                 figuresLayer[ySpawn + 1][xSpawn] = generatedColor;
                 figuresLayer[ySpawn + 1][xSpawn + 1] = generatedColor;
                 figuresLayer[ySpawn + 2][xSpawn + 1] = generatedColor;
                 break;
 
-            case 4:  //box
+            case 5:  //Z
+                figuresLayer[ySpawn][xSpawn+1] = generatedColor;
+                figuresLayer[ySpawn+1][xSpawn+1] = generatedColor;
+                figuresLayer[ySpawn + 1][xSpawn] = generatedColor;
+                figuresLayer[ySpawn + 2][xSpawn] = generatedColor;
+                break;
+
+            case 6:  //O
                 figuresLayer[ySpawn][xSpawn] = generatedColor;
                 figuresLayer[ySpawn + 1][xSpawn] = generatedColor;
                 figuresLayer[ySpawn + 1][xSpawn + 1] = generatedColor;
                 figuresLayer[ySpawn][xSpawn + 1] = generatedColor;
                 break;
 
-            case 5: //bridge
+            case 7: //bridge
                 figuresLayer[ySpawn][xSpawn] = generatedColor;
                 figuresLayer[ySpawn + 1][xSpawn] = generatedColor;
                 figuresLayer[ySpawn][xSpawn + 1] = generatedColor;
@@ -147,10 +161,26 @@ public class Game extends JFrame {
                 figuresLayer[ySpawn + 1][xSpawn + 2] = generatedColor;
                 break;
 
-            case 6: //bird
+            case 8: //bird
                 figuresLayer[ySpawn][xSpawn] = generatedColor;
                 figuresLayer[ySpawn + 1][xSpawn] = generatedColor;
                 figuresLayer[ySpawn][xSpawn + 1] = generatedColor;
+                break;
+
+            case 9: //birdOPPOSITE
+                figuresLayer[ySpawn][xSpawn] = generatedColor;
+                figuresLayer[ySpawn + 1][xSpawn+1] = generatedColor;
+                figuresLayer[ySpawn][xSpawn + 1] = generatedColor;
+                break;
+
+            case 10: //T
+                figuresLayer[ySpawn][xSpawn+1] = generatedColor;
+                figuresLayer[ySpawn+1][xSpawn+1] = generatedColor;
+                figuresLayer[ySpawn+1][xSpawn+2] = generatedColor;
+                figuresLayer[ySpawn+1][xSpawn] = generatedColor;
+
+                break;
+
         }
     }
 
@@ -246,13 +276,13 @@ public class Game extends JFrame {
                                   {0, 0, 0, 0} };
         int xCut = 0;
         int yCut = 0;
-        for (int y = 0; y < yField; y++) {  //cut fragment with figure
+        for (int y = yField; y > 0; y--) {  //cut fragment with figure
             for (int x = 0; x < xField; x++) {
                 if (figuresLayer[y][x] != 0 && c == 0) {
                     c++;
                     for (int y1 = 0; y1 < 4; y1++) {
                         for (int x1 = 0; x1 < 4; x1++) {
-                            figure[y1][x1] = figuresLayer[y + y1][x + x1];
+                            figure[y1][x1] = figuresLayer[y - y1][x + x1];
                         }
                     }
                     xCut = x;
@@ -260,6 +290,13 @@ public class Game extends JFrame {
                     break;
                 }
             }
+        }
+
+        for (int y = 0; y < 4; ++y) {
+            for (int x = 0; x < 4; ++x) {
+                System.out.print(figure[y][x]);
+            }
+            System.out.println();
         }
 
         if(xCut+4<=xField && yCut+4<=yField) { // possibility check
@@ -271,7 +308,7 @@ public class Game extends JFrame {
 
             for (int y = 0; y < 4; ++y) {  //roll the figure
                 for (int x = 0; x < 4; ++x) {
-                        dupFigure[x][3-y] = figure[y][x];
+                    dupFigure[x][y] = figure[y][x];
                 }
             }
 
@@ -372,6 +409,7 @@ public class Game extends JFrame {
         figureMonitor.setyCenter(100);
     }
 
+    boolean genFig = true;
     public void startGame() {
         xSpawn = Math.round(xField/2);
         generatedColor = random.nextInt(9) + 1;
@@ -394,10 +432,13 @@ public class Game extends JFrame {
             if(d){
                 itsBeDescent = false;
             }
-            generatedColor = random.nextInt(9) + 1;
-            generatedFigure = random.nextInt(6) + 1;
-            figureMonitor.setTypeOfFigure(5);
-            figureMonitor.setColor(generatedColor);
+            if(genFig) {
+                generatedColor = random.nextInt(9) + 1;
+                generatedFigure = random.nextInt(6) + 1;
+                figureMonitor.setTypeOfFigure(generatedFigure);
+                figureMonitor.setColor(generatedColor);
+                genFig = false;
+            }
             gravitation(figuresLayer, mainLayer);
             pixInit();
             coutArea();
@@ -414,10 +455,11 @@ public class Game extends JFrame {
             System.out.println(d + " =deletingARow");
             if((i || itsBeDescent && !d)){
                 mergerLayers();
+                genFig = true;
             }
             if((i || itsBeDescent && !d)){
                 itsBeDescent = false;
-                drawFigure(generatedColor, /*generatedFigure*/5, xSpawn, ySpawn);
+                drawFigure(generatedColor, generatedFigure, xSpawn, ySpawn);
             }
             if(sandMode) {
                 while (emptinessChek(mainLayer)) ;

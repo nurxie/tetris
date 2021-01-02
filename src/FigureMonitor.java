@@ -10,7 +10,7 @@ public class FigureMonitor {
     public void draw(Graphics g) {
     switch (typeOfFigure){
         case 1:
-            g.setColor(color);
+            g.setColor(color);//I
             g.fillRect(xCenter - pixDem, yCenter - pixDem, 2 * pixDem, 2 * pixDem);
             g.fillRect(xCenter - pixDem, yCenter - pixDem + 2 * pixDem + 2, 2 * pixDem, 2 * pixDem);
             g.fillRect(xCenter - pixDem, yCenter - pixDem + 4 * pixDem + 4, 2 * pixDem, 2 * pixDem);
@@ -18,7 +18,7 @@ public class FigureMonitor {
             break;
 
         case 2:
-            g.setColor(color);
+            g.setColor(color);//L
             g.fillRect(xCenter - pixDem, yCenter - pixDem, 2 * pixDem, 2 * pixDem);
             g.fillRect(xCenter - pixDem, yCenter - pixDem + 2 * pixDem + 2, 2 * pixDem, 2 * pixDem);
             g.fillRect(xCenter - pixDem, yCenter - pixDem + 4 * pixDem + 4, 2 * pixDem, 2 * pixDem);
@@ -26,14 +26,30 @@ public class FigureMonitor {
             break;
 
         case 3:
-            g.setColor(color);
+            g.setColor(color);//J
+            g.fillRect(xCenter - pixDem + 2 * pixDem + 2, yCenter - pixDem, 2 * pixDem, 2 * pixDem);
+            g.fillRect(xCenter - pixDem + 2 * pixDem + 2, yCenter - pixDem + 2 * pixDem + 2, 2 * pixDem, 2 * pixDem);
+            g.fillRect(xCenter - pixDem + 2 * pixDem + 2, yCenter - pixDem + 4 * pixDem + 4, 2 * pixDem, 2 * pixDem);
+            g.fillRect(xCenter - pixDem, yCenter - pixDem + 4 * pixDem + 4, 2 * pixDem, 2 * pixDem);
+            break;
+
+        case 4:
+            g.setColor(color); //S
             g.fillRect(xCenter - pixDem, yCenter - pixDem, 2 * pixDem, 2 * pixDem);
             g.fillRect(xCenter - pixDem, yCenter - pixDem + 2 * pixDem + 2, 2 * pixDem, 2 * pixDem);
             g.fillRect(xCenter - pixDem + 2 * pixDem + 2, yCenter - pixDem + 2 * pixDem + 2, 2 * pixDem, 2 * pixDem);
             g.fillRect(xCenter - pixDem + 2 * pixDem + 2, yCenter - pixDem + 4 * pixDem + 4, 2 * pixDem, 2 * pixDem);
             break;
 
-        case 4:
+        case 5:
+            g.setColor(color); //Z
+            g.fillRect(xCenter - pixDem+ 2 * pixDem + 2, yCenter - pixDem, 2 * pixDem, 2 * pixDem);
+            g.fillRect(xCenter - pixDem+ 2 * pixDem + 2, yCenter - pixDem + 2 * pixDem + 2, 2 * pixDem, 2 * pixDem);
+            g.fillRect(xCenter - pixDem, yCenter - pixDem + 2 * pixDem + 2, 2 * pixDem, 2 * pixDem);
+            g.fillRect(xCenter - pixDem, yCenter - pixDem + 4 * pixDem + 4, 2 * pixDem, 2 * pixDem);
+            break;
+
+        case 6: //o
             g.setColor(color);
             g.fillRect(xCenter - pixDem, yCenter - pixDem, 2 * pixDem, 2 * pixDem);
             g.fillRect(xCenter - pixDem, yCenter - pixDem + 2 * pixDem + 2, 2 * pixDem, 2 * pixDem);
@@ -41,12 +57,35 @@ public class FigureMonitor {
             g.fillRect(xCenter - pixDem + 2 * pixDem + 2, yCenter - pixDem + 2 * pixDem + 2, 2 * pixDem, 2 * pixDem);
             break;
 
-        case 5:
+        case 7: // bridge
             g.setColor(color);
             g.fillRect(xCenter - pixDem, yCenter - pixDem, 2 * pixDem, 2 * pixDem);
             g.fillRect(xCenter - pixDem, yCenter - pixDem + 2 * pixDem + 2, 2 * pixDem, 2 * pixDem);
             g.fillRect(xCenter - pixDem + 2 * pixDem + 2, yCenter - pixDem, 2 * pixDem, 2 * pixDem);
+            g.fillRect(xCenter - pixDem + 4 * pixDem + 4, yCenter - pixDem, 2 * pixDem, 2 * pixDem);
+            g.fillRect(xCenter - pixDem + 4 * pixDem + 4, yCenter - pixDem + 2 * pixDem + 2, 2 * pixDem, 2 * pixDem);
+            break;
+
+        case 8:
+            g.setColor(color);
+            g.fillRect(xCenter - pixDem, yCenter - pixDem, 2 * pixDem, 2 * pixDem);
+            g.fillRect(xCenter - pixDem, yCenter - pixDem + 2 * pixDem + 2, 2 * pixDem, 2 * pixDem);
+            g.fillRect(xCenter - pixDem + 2 * pixDem + 2, yCenter - pixDem, 2 * pixDem, 2 * pixDem);
+            break;
+
+        case 9:
+            g.setColor(color);
+            g.fillRect(xCenter - pixDem + 2 * pixDem + 2, yCenter - pixDem, 2 * pixDem, 2 * pixDem);
+            g.fillRect(xCenter - pixDem, yCenter - pixDem, 2 * pixDem, 2 * pixDem);
             g.fillRect(xCenter - pixDem + 2 * pixDem + 2, yCenter - pixDem + 2 * pixDem + 2, 2 * pixDem, 2 * pixDem);
+            break;
+
+        case 10:
+            g.setColor(color);
+            g.fillRect(xCenter - pixDem + 2 * pixDem + 2, yCenter - pixDem, 2 * pixDem, 2 * pixDem);
+            g.fillRect(xCenter - pixDem + 2 * pixDem + 2, yCenter - pixDem + 2 * pixDem + 2, 2 * pixDem, 2 * pixDem);
+            g.fillRect(xCenter - pixDem, yCenter - pixDem + 2 * pixDem + 2, 2 * pixDem, 2 * pixDem);
+            g.fillRect(xCenter - pixDem + 4 * pixDem + 4, yCenter - pixDem + 2 * pixDem + 2, 2 * pixDem, 2 * pixDem);
             break;
     }
 
