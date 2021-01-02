@@ -23,6 +23,7 @@ public class Game extends JFrame {
     int xField = 30;
     int delay;
     int UNFILLED = 0;
+    boolean sandMode = false;
 
     Pix[][] pix = new Pix[yField][xField];
     Cadre cadre = new Cadre();
@@ -33,7 +34,7 @@ public class Game extends JFrame {
 
     int generatedColor = 3;
     int generatedFigure = 3;
-    int xSpawn = 4;
+    int xSpawn = 5;
     int ySpawn = 0;
 
     boolean itsBeDescent = false;
@@ -151,15 +152,32 @@ public class Game extends JFrame {
         }
     }
 
-    boolean gravitation() {
+    boolean gravitation(int[][] figuresLayer, int[][] mainLayer) {
         boolean i = false;
         for (int y = yField; y >= 0; y--) {
             for (int x = 0; x < xField; x++) {
                 if (figuresLayer[y][x] != UNFILLED) {
-                    if (mainLayer[y][x] == UNFILLED) {
+                    if (mainLayer[y+1][x] == UNFILLED) {
                         if (figuresLayer[y][x] != 0 && y == yField - 1) return false;
                         figuresLayer[y + 1][x] = figuresLayer[y][x];
                         figuresLayer[y][x] = UNFILLED;
+                        i = true;
+                    }
+                }
+            }
+        }
+        return i;
+    }
+
+    boolean emptinessChek(int[][] layer){
+        boolean i = false;
+        for (int y = yField-1; y > 0; y--) {
+            for (int x = 0; x < xField; x++) {
+                if(layer[y][x] == 0){
+                    if(layer[y-1][x] != 0){
+                        if (figuresLayer[y][x] != 0 && y == yField - 1) return false;
+                        layer[y][x] = layer[y-1][x];
+                        layer[y-1][x] = UNFILLED;
                         i = true;
                     }
                 }
@@ -187,7 +205,7 @@ public class Game extends JFrame {
         for (int i = yField; i >= 0; i--) {
            figuresLayer[i][xField - 1] = 0;
         }
-        gravitation();
+        gravitation(figuresLayer, mainLayer);
         return true;
     }
 
@@ -201,7 +219,7 @@ public class Game extends JFrame {
         }
         for (int x = xField-1; x >= 0; x--) {  //move right
             for (int y = 0; y < yField; y++) {
-                if(figuresLayer[y][x] != 0 && mainLayer[y][x-1] != 0) return false;
+                //if(figuresLayer[y][x] != 0 && mainLayer[y][x-1] != 0) return false;
                 if(figuresLayer[y][x] != 0 && mainLayer[y+1][x+1] != 0 ) return false;
                     figuresLayer[y][x + 1] = figuresLayer[y][x];
                     figuresLayer[y][x] = 0;
@@ -270,7 +288,7 @@ public class Game extends JFrame {
 
     void sharpDescent(){
         while(true) {
-            gravitation();
+            gravitation(figuresLayer, mainLayer);
             if (collisionChek()) {
                 mergerLayers();
                 break;
@@ -324,24 +342,30 @@ public class Game extends JFrame {
 
     boolean deletingARow() {
         int counter = 0;
+        boolean ret = false;
         for (int y = 0; y < yField; y++) {
             for (int x = 0; x < xField; x++) {
                 if (mainLayer[y][x] == 0) counter = 0;
                 counter++;
-                if (counter >= xField-1) {
+                if (counter > xField) {
                     System.out.println("YESYESYESYESYESYESYESYESYESYESYESYESYESYESYESYESYESYESYES");
                     score++;
                     gameOver.setScore(score);
                     for (int x1 = 0; x1 < xField; x1++) {
                         mainLayer[y][x1] = 0;
                     }
+                    while(gravitation(mainLayer, mainLayer));
+                    itsBeDescent = true;
+                    ret = true;
+                    while(emptinessChek(mainLayer));
                 }
             }
         }
-        return true;
+        return ret;
     }
 
     public void startGame() {
+        xSpawn = Math.round(xField/2);
         generatedColor = random.nextInt(9) + 1;
         generatedFigure = random.nextInt(6) + 1;
         arrayInit();
@@ -349,35 +373,43 @@ public class Game extends JFrame {
         coutArea();
         repaint();
         drawFigure(generatedColor, 1, xSpawn, ySpawn);
-        pixInit();
         coutArea();
         repaint();
         waiting();
-        gravitation();
+        gravitation(figuresLayer, mainLayer);
         pixInit();
         coutArea();
         repaint();
         while (true) {
-            deletingARow();
+            boolean d = deletingARow();
+            if(d){
+                itsBeDescent = false;
+            }
             generatedColor = random.nextInt(9) + 1;
             generatedFigure = random.nextInt(6) + 1;
-            gravitation();
+            gravitation(figuresLayer, mainLayer);
             pixInit();
             coutArea();
             repaint();
             waiting();
-            boolean i = collisionChek();
-            System.out.println(i);
-            if(i || itsBeDescent)mergerLayers();
-            if(i || itsBeDescent){
-                itsBeDescent = false;
-                drawFigure(generatedColor, generatedFigure, xSpawn, ySpawn);
-            }
-            i = gameOverChek();
-            System.out.println(i + " Game over cheked");
+            boolean i = gameOverChek();
             if(i && !itsBeDescent){
                 System.out.println("GAME OVER!");
                 break;
+            }
+            i = collisionChek();
+            System.out.println(i + " =colleseonchek");
+            System.out.println(itsBeDescent + " =itsBeDescent");
+            System.out.println(d + " =deletingARow");
+            if((i || itsBeDescent && !d)){
+                mergerLayers();
+            }
+            if((i || itsBeDescent && !d)){
+                itsBeDescent = false;
+                drawFigure(generatedColor, /*generatedFigure*/1, xSpawn, ySpawn);
+            }
+            if(sandMode) {
+                while (emptinessChek(mainLayer)) ;
             }
         }
     }
@@ -397,6 +429,7 @@ public class Game extends JFrame {
     public void setxField(int xField) { this.xField = xField; }
     public void setUNFILLED(int UNFILLED) { this.UNFILLED = UNFILLED; }
     public void setDelay(int delay) { this.delay = delay; }
+    public void setSandMode(boolean sandMode) { this.sandMode = sandMode; }
 
     public Game() {
         KeyListener listener = new MyKeyListener();
