@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.Random;
 import javax.swing.*;
 import java.awt.*;
@@ -13,6 +14,15 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import java.awt.*;
+import javax.imageio.ImageIO;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.WindowConstants;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class Game extends JFrame {
     final Random random = new Random();
@@ -29,6 +39,7 @@ public class Game extends JFrame {
     Cadre cadre = new Cadre();
     Score score = new Score();
     FigureMonitor figureMonitor = new FigureMonitor();
+    NewGameButton newGameButton = new NewGameButton();
     int[][] mainLayer = new int[yField][xField];
     int[][] figuresLayer = new int[yField][xField];
     int[][] pastView = new int[yField][xField];
@@ -72,6 +83,7 @@ public class Game extends JFrame {
             cadre.draw(g);
         score.draw(g);
         figureMonitor.draw(g);
+        newGameButton.draw(g);
     }
 
     void coutArea() {
