@@ -28,6 +28,7 @@ import java.awt.*;
 import java.util.Random;
 import java.util.Scanner;
 import java.awt.event.*;
+import java.util.*;
 
 public class Game extends JFrame {
     final Random random = new Random();
@@ -62,7 +63,9 @@ public class Game extends JFrame {
 
     boolean itsBeDescent = false;
     int scoreCountner = 0;
-    boolean gameOverFlag = false;
+
+    long lastInteraptTime = 0;
+    long start = System.currentTimeMillis();
 
     public void createFrame() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -96,9 +99,7 @@ public class Game extends JFrame {
         score.draw(g);
         figureMonitor.draw(g);
         newGameButton.draw(g);
-        if(gameOverFlag){
-            gameOver.draw(g);
-        }
+        gameOver.draw(g);
     }
 
     void coutArea() {
@@ -439,7 +440,6 @@ public class Game extends JFrame {
     boolean genFig = true;
     public void startGame() {
         while (true) {
-            gameOverFlag = false;
             xSpawn = Math.round(xField / 2);
             generatedColor = random.nextInt(9) + 1;
             generatedFigure = random.nextInt(10) + 1;
@@ -460,44 +460,52 @@ public class Game extends JFrame {
             repaint();
             newGameButton.setButtonClick(false);
             while (true) {
-                if (reboot) {
-                     reboot = false;
-                    break;
-                }
-                boolean d = deletingARow();
-                if (d) {
-                    itsBeDescent = false;
-                }
-                if (genFig) {
-                    generatedColor = random.nextInt(9) + 1;
-                    generatedFigure = random.nextInt(6) + 1;
-                    figureMonitor.setTypeOfFigure(generatedFigure);
-                    figureMonitor.setColor(generatedColor);
-                    genFig = false;
-                }
-                gravitation(figuresLayer, mainLayer);
-                pixInit();
-                coutArea();
-                repaint();
-                waiting();
-                boolean i = gameOverChek();
-                if (i && !itsBeDescent) {
-                    System.out.println("GAME OVER!");
-                    gameOverFlag = true;
-                    while(true);
-                    //break;
-                }
-                i = collisionChek();
-                if ((i || itsBeDescent && !d)) {
-                    mergerLayers();
-                    genFig = true;
-                }
-                if ((i || itsBeDescent && !d)) {
-                    itsBeDescent = false;
-                    drawFigure(generatedColor, generatedFigure, xSpawn, ySpawn);
-                }
-                if (sandMode) {
-                    while (emptinessChek(mainLayer)) ;
+                long timeWorkCode = System.currentTimeMillis() - start;
+                System.out.println(timeWorkCode);
+                if (timeWorkCode - lastInteraptTime > 180) {
+                    lastInteraptTime = timeWorkCode;
+                    if (reboot) {
+                        reboot = false;
+                        break;
+                    }
+                    boolean d = deletingARow();
+                    if (d) {
+                        itsBeDescent = false;
+                    }
+                    if (genFig) {
+                        generatedColor = random.nextInt(9) + 1;
+                        generatedFigure = random.nextInt(10) + 1;
+                        figureMonitor.setTypeOfFigure(generatedFigure);
+                        figureMonitor.setColor(generatedColor);
+                        genFig = false;
+                    }
+                    gravitation(figuresLayer, mainLayer);
+                    pixInit();
+                    coutArea();
+                    repaint();
+                    //waiting();
+                    boolean i = gameOverChek();
+                    if (i && !itsBeDescent) {
+                        gameOver.setColor(1);
+                        waiting();
+                        waiting();
+                        waiting();
+                        System.out.println("GAMEOVER");
+                        gameOver.setColor(2);
+                        break;
+                    }
+                    i = collisionChek();
+                    if ((i || itsBeDescent && !d)) {
+                        mergerLayers();
+                        genFig = true;
+                    }
+                    if ((i || itsBeDescent && !d)) {
+                        itsBeDescent = false;
+                        drawFigure(generatedColor, generatedFigure, xSpawn, ySpawn);
+                    }
+                    if (sandMode) {
+                        while (emptinessChek(mainLayer)) ;
+                    }
                 }
             }
         }
@@ -548,7 +556,6 @@ public class Game extends JFrame {
             newGameButton.setButtonClick(true);
             if(newGameButton.isMouseUnderMe(MouseY, MouseX)){
                 reboot = true;
-                gameOverFlag = false;
             }
         }
         ///////////////////
