@@ -17,16 +17,34 @@ import javax.swing.JFrame;
 
 
 public class NewGameButton extends JComponent{
-    private int xCenter = 20;
-    private int yCenter = 40;
-    boolean isSelected = true;
-    public void draw(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g;
+    private int xCenter = 495;
+    private int yCenter = 280;
+    private int width = 125;
+    private int height = 50;
+    boolean buttonClick = false;
+    boolean buttonMouse = false;
 
-        Image img1 = Toolkit.getDefaultToolkit().getImage("src\\pictures\\button.png");
-       // g2.drawImage(img1, 200, 200,this);
-        g2.drawImage(img1, 495, 280, 125, 50, this);
-        g2.finalize();
+    public void draw(Graphics g) {
+        if(!buttonClick && !buttonMouse) {
+            Graphics2D g2 = (Graphics2D) g;
+            Image img1 = Toolkit.getDefaultToolkit().getImage("src\\pictures\\button.png");
+            g2.drawImage(img1, xCenter, yCenter, width, height, this);
+        }else if(buttonClick){
+            Graphics2D g2 = (Graphics2D) g;
+            Image img1 = Toolkit.getDefaultToolkit().getImage("src\\pictures\\buttonClick.png");
+            g2.drawImage(img1, xCenter, yCenter, width, height, this);
+        }else if(buttonMouse){
+            Graphics2D g2 = (Graphics2D) g;
+            Image img1 = Toolkit.getDefaultToolkit().getImage("src\\pictures\\buttonMouse.png");
+            g2.drawImage(img1, xCenter, yCenter, width, height, this);
+        }
+    }
+
+    boolean mouseUnderMe(int yMouse, int xMouse){
+        if((yMouse>yCenter && yMouse<yCenter+height)&&(xMouse>xMouse && xMouse<xMouse+width)){
+           return true;
+        }
+        return false;
     }
 
     public void setxCenter(int xCenter) {
@@ -37,7 +55,11 @@ public class NewGameButton extends JComponent{
         this.yCenter = yCenter;
     }
 
-    public void setSelected(boolean selected) {
-        isSelected = selected;
+    public void setButtonClick(boolean buttonClick) {
+        this.buttonClick = buttonClick;
+    }
+
+    public void setButtonMouse(boolean buttonMouse) {
+        this.buttonMouse = buttonMouse;
     }
 }
