@@ -23,6 +23,11 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import javax.swing.*;
+import java.awt.*;
+import java.util.Random;
+import java.util.Scanner;
+import java.awt.event.*;
 
 public class Game extends JFrame {
     final Random random = new Random();
@@ -35,11 +40,17 @@ public class Game extends JFrame {
     int UNFILLED = 0;
     boolean sandMode = false;
 
+
+    int MouseX = 0;
+    int MouseY = 0;
+
+    boolean reboot = false;
     Pix[][] pix = new Pix[yField][xField];
     Cadre cadre = new Cadre();
     Score score = new Score();
     FigureMonitor figureMonitor = new FigureMonitor();
     NewGameButton newGameButton = new NewGameButton();
+    GameOver gameOver = new GameOver();
     int[][] mainLayer = new int[yField][xField];
     int[][] figuresLayer = new int[yField][xField];
     int[][] pastView = new int[yField][xField];
@@ -51,6 +62,7 @@ public class Game extends JFrame {
 
     boolean itsBeDescent = false;
     int scoreCountner = 0;
+    boolean gameOverFlag = false;
 
     public void createFrame() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -84,6 +96,9 @@ public class Game extends JFrame {
         score.draw(g);
         figureMonitor.draw(g);
         newGameButton.draw(g);
+        if(gameOverFlag){
+            gameOver.draw(g);
+        }
     }
 
     void coutArea() {
@@ -95,12 +110,12 @@ public class Game extends JFrame {
                 } else {
                     pix[y][x].setColor(figuresLayer[y][x]);
                 }
-                System.out.print(mainLayer[y][x]);
+                //System.out.print(mainLayer[y][x]);
                 //if(x == 2) pix[y][x].setColor(3); //test the drawer
             }
-            System.out.println();
+           // System.out.println();
         }
-        System.out.println("=====================");
+        //System.out.println("=====================");
     }
 
     void arrayInit() {
@@ -354,7 +369,6 @@ public class Game extends JFrame {
             for (int x = xField; x >= 0; x--) {
                 if(figuresLayer[y][x] != 0) {
                     if (y + 2 <= yField) {
-                        System.out.println("WOW YEAH!");
                         if (mainLayer[y + 1][x] != 0) {
                             return true;
                         }
@@ -408,7 +422,7 @@ public class Game extends JFrame {
                     while(gravitation(mainLayer, mainLayer));
                     itsBeDescent = true;
                     ret = true;
-                    while(emptinessChek(mainLayer));
+                    /*while(*/emptinessChek(mainLayer)/*)*/;
                 }
             }
         }
@@ -424,58 +438,67 @@ public class Game extends JFrame {
 
     boolean genFig = true;
     public void startGame() {
-        xSpawn = Math.round(xField/2);
-        generatedColor = random.nextInt(9) + 1;
-        generatedFigure = random.nextInt(6) + 1;
-        arrayInit();
-        pixInit();
-        figureMonitorInit();
-        coutArea();
-        repaint();
-        drawFigure(generatedColor, 1, xSpawn, ySpawn);
-        coutArea();
-        repaint();
-        waiting();
-        gravitation(figuresLayer, mainLayer);
-        pixInit();
-        coutArea();
-        repaint();
         while (true) {
-            boolean d = deletingARow();
-            if(d){
-                itsBeDescent = false;
-            }
-            if(genFig) {
-                generatedColor = random.nextInt(9) + 1;
-                generatedFigure = random.nextInt(6) + 1;
-                figureMonitor.setTypeOfFigure(generatedFigure);
-                figureMonitor.setColor(generatedColor);
-                genFig = false;
-            }
+            gameOverFlag = false;
+            xSpawn = Math.round(xField / 2);
+            generatedColor = random.nextInt(9) + 1;
+            generatedFigure = random.nextInt(10) + 1;
+            figureMonitor.setTypeOfFigure(generatedFigure);
+            figureMonitor.setColor(generatedColor);
+            arrayInit();
+            pixInit();
+            figureMonitorInit();
+            coutArea();
+            repaint();
+            drawFigure(generatedColor, 1, xSpawn, ySpawn);
+            coutArea();
+            repaint();
+            waiting();
             gravitation(figuresLayer, mainLayer);
             pixInit();
             coutArea();
             repaint();
-            waiting();
-            boolean i = gameOverChek();
-            if(i && !itsBeDescent){
-                System.out.println("GAME OVER!");
-                break;
-            }
-            i = collisionChek();
-            System.out.println(i + " =colleseonchek");
-            System.out.println(itsBeDescent + " =itsBeDescent");
-            System.out.println(d + " =deletingARow");
-            if((i || itsBeDescent && !d)){
-                mergerLayers();
-                genFig = true;
-            }
-            if((i || itsBeDescent && !d)){
-                itsBeDescent = false;
-                drawFigure(generatedColor, generatedFigure, xSpawn, ySpawn);
-            }
-            if(sandMode) {
-                while (emptinessChek(mainLayer)) ;
+            newGameButton.setButtonClick(false);
+            while (true) {
+                if (reboot) {
+                     reboot = false;
+                    break;
+                }
+                boolean d = deletingARow();
+                if (d) {
+                    itsBeDescent = false;
+                }
+                if (genFig) {
+                    generatedColor = random.nextInt(9) + 1;
+                    generatedFigure = random.nextInt(6) + 1;
+                    figureMonitor.setTypeOfFigure(generatedFigure);
+                    figureMonitor.setColor(generatedColor);
+                    genFig = false;
+                }
+                gravitation(figuresLayer, mainLayer);
+                pixInit();
+                coutArea();
+                repaint();
+                waiting();
+                boolean i = gameOverChek();
+                if (i && !itsBeDescent) {
+                    System.out.println("GAME OVER!");
+                    gameOverFlag = true;
+                    while(true);
+                    //break;
+                }
+                i = collisionChek();
+                if ((i || itsBeDescent && !d)) {
+                    mergerLayers();
+                    genFig = true;
+                }
+                if ((i || itsBeDescent && !d)) {
+                    itsBeDescent = false;
+                    drawFigure(generatedColor, generatedFigure, xSpawn, ySpawn);
+                }
+                if (sandMode) {
+                    while (emptinessChek(mainLayer)) ;
+                }
             }
         }
     }
@@ -499,8 +522,36 @@ public class Game extends JFrame {
 
     public Game() {
         KeyListener listener = new MyKeyListener();
+        MouseListener listener1 = new MouseListener();
         addKeyListener(listener);
+        addMouseListener(listener1);
         setFocusable(true);
+    }
+
+    public class MouseListener implements java.awt.event.MouseListener{
+        ///////////////////
+        public void mouseClicked(MouseEvent e) { }
+        public void mouseEntered(MouseEvent e) { }
+        public void mouseExited(MouseEvent e) { }
+        @Override
+        public void mousePressed(MouseEvent e) {
+            MouseX = e.getX();
+            MouseY = e.getY();
+            newGameButton.setButtonMouse(newGameButton.isMouseUnderMe(MouseY, MouseX));
+            System.out.println(newGameButton.isMouseUnderMe(MouseY, MouseX));
+        }
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            MouseX = e.getX();
+            MouseY = e.getY();
+            newGameButton.setButtonMouse(false);
+            newGameButton.setButtonClick(true);
+            if(newGameButton.isMouseUnderMe(MouseY, MouseX)){
+                reboot = true;
+                gameOverFlag = false;
+            }
+        }
+        ///////////////////
     }
 
     public class MyKeyListener implements KeyListener {
@@ -525,10 +576,10 @@ public class Game extends JFrame {
             }
 
         }
-
         @Override
         public void keyReleased(KeyEvent e) {
             System.out.println("keyReleased=" + KeyEvent.getKeyText(e.getKeyCode()));
         }
     }
+
 }

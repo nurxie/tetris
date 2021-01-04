@@ -33,6 +33,8 @@ public class NewGameButton extends JComponent{
             Graphics2D g2 = (Graphics2D) g;
             Image img1 = Toolkit.getDefaultToolkit().getImage("src\\pictures\\buttonClick.png");
             g2.drawImage(img1, xCenter, yCenter, width, height, this);
+            buttonClick = false;
+            buttonMouse = false;
         }else if(buttonMouse){
             Graphics2D g2 = (Graphics2D) g;
             Image img1 = Toolkit.getDefaultToolkit().getImage("src\\pictures\\buttonMouse.png");
@@ -40,8 +42,8 @@ public class NewGameButton extends JComponent{
         }
     }
 
-    boolean mouseUnderMe(int yMouse, int xMouse){
-        if((yMouse>yCenter && yMouse<yCenter+height)&&(xMouse>xMouse && xMouse<xMouse+width)){
+    boolean isMouseUnderMe(int yMouse, int xMouse){
+        if((yMouse>yCenter && yMouse<yCenter+height)&&(xMouse>xCenter && xMouse<xCenter+width)){
            return true;
         }
         return false;
